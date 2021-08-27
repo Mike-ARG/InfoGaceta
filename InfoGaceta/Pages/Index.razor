@@ -1,0 +1,40 @@
+﻿@page "/"
+@using InfoGaceta.Data
+@inject ScrapperService Scrapit
+
+<h1>Titulares de La Gaceta</h1>
+
+@if (LstData == null)
+{
+    <p><em>Cargando...</em></p>
+}else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Titulares</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var data in LstData)
+             {
+                <tr>
+                    <td><b>@contador)</b> @data.ToString()</td>
+                </tr>
+                contador++;
+             }
+        </tbody>
+    </table>
+}
+
+
+@code
+{
+    int contador = 1;
+    public List<string> LstData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LstData = await Scrapit.DoScrapping();
+    }
+}
