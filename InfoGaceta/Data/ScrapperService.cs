@@ -19,32 +19,30 @@ namespace InfoGaceta.Data
             Stream stream = await result.Content.ReadAsStreamAsync();
             HtmlDocument doc = new();
             doc.Load(stream);
-            var HeaderNames = doc.DocumentNode.SelectNodes("//div[@class='text']/h2");
+            var datos = doc.DocumentNode.SelectNodes("//div[@class='text']/h2");
 
-            foreach (var item in HeaderNames)
+            foreach (var item in datos)
             {
                 Data1st.Add(item.InnerText);
             }
             return Data1st;
         }
-
-        public async Task<Dictionary<string, string>> ObtenerTasas()
+        public async Task<List<string>> GetCategorias()
         {
-            Dictionary<string, string> Data = new();
+            List<string> Data1st = new();
 
             HttpClient hc = new();
-            HttpResponseMessage result = await hc.GetAsync($"http://www.bcra.gov.ar/BCRAyVos/Plazos_fijos_online.asp");
+            HttpResponseMessage result = await hc.GetAsync($"https://www.lagaceta.com.ar/");
             Stream stream = await result.Content.ReadAsStreamAsync();
             HtmlDocument doc = new();
             doc.Load(stream);
-            var datos = doc.DocumentNode.SelectNodes("//table//tr//td[1]");
-            var datos2 = doc.DocumentNode.SelectNodes("//table//tr//td[4]");
+            var datos = doc.DocumentNode.SelectNodes("//div[@class='smallTitle']");
 
-            for (int i = 0; i < datos.Count; i++)
+            foreach (var item in datos)
             {
-                Data.Add(datos[i].InnerText, datos2[i].InnerText.Trim().Replace("%", ""));
+                Data1st.Add(item.InnerText.Trim());
             }
-            return Data.OrderByDescending(key => key.Value).ToDictionary(x => x.Key, x => x.Value);
+            return Data1st;
         }
     }
 }

@@ -1,0 +1,43 @@
+﻿@page "/categorias"
+@using InfoGaceta.Data
+@inject ScrapperService Scrapit
+
+
+@if (LstData == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <h3>Listado de categorías (y número de noticias en cada una de ellas)</h3>
+    foreach (var item in LstData)
+    {
+        if (ListaCategorias.ContainsKey(item))
+        {
+            ListaCategorias[item]++;
+        }
+        else
+        {
+            ListaCategorias.Add(item, 1);
+        }
+    }
+
+<ol>
+    @foreach (var item in ListaCategorias.OrderByDescending(key => key.Value))
+    {
+    <li>@item.Key: @item.Value</li>
+    }
+</ol>
+}
+
+
+
+@code {
+    public List<string> LstData;
+    public Dictionary<string, int> ListaCategorias = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        LstData = await Scrapit.GetCategorias();
+    }
+}
