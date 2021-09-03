@@ -1,28 +1,36 @@
 ﻿@page "/"
 @using InfoGaceta.Data
 @inject ScrapperService Scrapit
+@inject IJSRuntime IJ
 
 <h1>Titulares de La Gaceta</h1>
 
 @if (LstData == null)
 {
     <p><em>Cargando...</em></p>
-}else
+}
+else
 {
-    <table>
+    <div class="text-left bg-blue-100" id="BuscadorTitulos">
+        <input class="border-4 w-1/3 rounded m-6 p-6 h-8
+                   border-blue-300" @bind-value="SearchText"
+               @bind-value:event="oninput" placeholder="Buscar por título" />
+    </div>
+    <table id="tabla-titulos">
         <thead>
-            <tr>
-                <th>Titulares</th>
-            </tr>
         </thead>
         <tbody>
             @foreach (var data in LstData)
-             {
-                <tr>
-                    <td><b>@contador)</b> @data.ToString()</td>
-                </tr>
-                contador++;
-             }
+            {
+                if (data.ToString().Contains(SearchText))
+                {
+                    <tr>
+                        <td><b>@contador)</b> @data.ToString()</td>
+                    </tr>
+                    contador++;
+                }
+            }
+            @{contador = 1;}
         </tbody>
     </table>
 }
@@ -37,4 +45,6 @@
     {
         LstData = await Scrapit.DoScrapping();
     }
+
+    private string SearchText = "";
 }
