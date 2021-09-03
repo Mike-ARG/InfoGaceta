@@ -22,7 +22,7 @@ else
         <tbody>
             @foreach (var data in LstData)
             {
-                if (data.ToString().Contains(SearchText))
+                if (data.Contains(SearchText))
                 {
                     <tr>
                         <td><b>@contador)</b> @data.ToString()</td>
@@ -30,7 +30,13 @@ else
                     contador++;
                 }
             }
-            @{contador = 1;}
+            @{
+                if (contador == 1)
+                {
+                    <tr>No hay títulos que coincidan con la búsqueda.</tr>
+                }
+                contador = 1;
+            }
         </tbody>
     </table>
 }
@@ -40,11 +46,10 @@ else
 {
     int contador = 1;
     public List<string> LstData;
+    private string SearchText = "";
 
     protected override async Task OnInitializedAsync()
     {
         LstData = await Scrapit.DoScrapping();
     }
-
-    private string SearchText = "";
 }
